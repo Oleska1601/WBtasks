@@ -2,23 +2,23 @@ package main
 
 import "fmt"
 
-type human struct {
+type Human struct {
 	name    string
 	surname string
 	age     int
 }
 
-type action struct {
-	human
+type Action struct {
+	Human
 }
 
-func (h human) getFullName() string {
+func (h Human) getFullName() string {
 	return h.name + " " + h.surname
 }
 
 func main() {
-	act := action{
-		human: human{
+	act := Action{
+		Human: Human{
 			name:    "Olesya",
 			surname: "Frolova",
 			age:     19,
