@@ -3,7 +3,10 @@ package main
 import (
 	"context"
 	"fmt"
+	"log"
+	"os"
 	"os/signal"
+	"strconv"
 	"sync"
 	"sync/atomic"
 	"syscall"
@@ -29,8 +32,14 @@ func worker(ctx context.Context, wg *sync.WaitGroup, i int, ch <-chan int64) {
 }
 
 func main() {
-	var workers int
-	fmt.Scan(&workers)
+	if len(os.Args) < 2 {
+		log.Fatalln("no workers were provided")
+	}
+
+	workers, err := strconv.Atoi(os.Args[1])
+	if err != nil || workers <= 0 {
+		log.Fatalln("incorrect workers")
+	}
 
 	ch := make(chan int64)
 	var v atomic.Int64
