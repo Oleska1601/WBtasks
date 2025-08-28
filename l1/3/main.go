@@ -1,0 +1,60 @@
+package main
+
+import (
+	"context"
+	"fmt"
+	"os/signal"
+	"sync"
+	"sync/atomic"
+	"syscall"
+)
+
+func worker(ctx context.Context, wg *sync.WaitGroup, i int, ch <-chan int64) {
+	defer wg.Done()
+	for {
+		select {
+		// работа остановится при непосредственном обнаружении отмены контекста или при закрытии канала в главной горутине main
+		case <-ctx.Done():
+			fmt.Printf("stop worker %d due to context\n", i)
+			return
+		case v, ok := <-ch:
+			if !ok {
+				fmt.Printf("stop worker %d due to close channel\n", i)
+				return
+			}
+			fmt.Printf("worker %d process value %d\n", i, v)
+		}
+	}
+
+}
+
+func main() {
+	var workers int
+	fmt.Scan(&workers)
+
+	ch := make(chan int64)
+	var v atomic.Int64
+
+	wg := &sync.WaitGroup{}
+	ctx, cancel := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
+	defer cancel()
+	for i := range workers {
+		wg.Add(1)
+		go worker(ctx, wg, i, ch)
+	}
+
+	go func() {
+		defer close(ch)
+		for {
+			select {
+			case <-ctx.Done(): // вызов сигнала отмены -> отмена контекста -> закрытие канала для записи
+				return
+			case ch <- v.Add(1): //постоянная запись данных в канал
+			}
+
+		}
+	}()
+
+	wg.Wait()
+
+}
