@@ -3,22 +3,21 @@ package main
 import (
 	"fmt"
 	"log"
+	"math/rand"
 	"os"
 	"strconv"
 	"time"
 )
 
-func writer(stop chan struct{}) chan int64 {
-	ch := make(chan int64)
+func writer(stop chan struct{}) chan int {
+	ch := make(chan int)
 	go func() {
 		defer close(ch)
-		var v int64
 		for {
 			select {
 			case <-stop:
 				return
-			case ch <- v:
-				v++
+			case ch <- rand.Intn(1000):
 			}
 		}
 	}()
