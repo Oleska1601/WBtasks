@@ -1,5 +1,7 @@
 package main
 
+//отмена с контекстом
+
 import (
 	"context"
 	"fmt"
@@ -16,7 +18,7 @@ func worker(ctx context.Context, wg *sync.WaitGroup, i int, ch <-chan int64) {
 	defer wg.Done()
 	for {
 		select {
-		// работа остановится при непосредственном обнаружении отмены контекста или при закрытии канала в главной горутине main
+		// работа остановится при непосредственном обнаружении отмены контекста или при закрытии канала ch в главной горутине main
 		case <-ctx.Done():
 			fmt.Printf("stop worker %d due to context\n", i)
 			return
@@ -56,7 +58,7 @@ func main() {
 		defer close(ch)
 		for {
 			select {
-			case <-ctx.Done(): // вызов сигнала отмены -> отмена контекста -> закрытие канала для записи
+			case <-ctx.Done(): // вызов сигнала отмены -> отмена контекста -> закрытие канала для записи ch
 				return
 			case ch <- v.Add(1): //постоянная запись данных в канал
 			}
