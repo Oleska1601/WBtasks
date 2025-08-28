@@ -6,15 +6,15 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"math/rand"
 	"os"
 	"os/signal"
 	"strconv"
 	"sync"
-	"sync/atomic"
 	"syscall"
 )
 
-func worker(ctx context.Context, wg *sync.WaitGroup, i int, ch <-chan int64) {
+func worker(ctx context.Context, wg *sync.WaitGroup, i int, ch <-chan int) {
 	defer wg.Done()
 	for {
 		select {
@@ -43,8 +43,7 @@ func main() {
 		log.Fatalln("incorrect workers")
 	}
 
-	ch := make(chan int64)
-	var v atomic.Int64
+	ch := make(chan int)
 
 	wg := &sync.WaitGroup{}
 	ctx, cancel := signal.NotifyContext(context.Background(), syscall.SIGINT)
@@ -60,7 +59,7 @@ func main() {
 			select {
 			case <-ctx.Done(): // вызов сигнала отмены -> отмена контекста -> закрытие канала для записи ch
 				return
-			case ch <- v.Add(1): //постоянная запись данных в канал
+			case ch <- rand.Intn(1000): //постоянная запись данных в канал
 			}
 
 		}

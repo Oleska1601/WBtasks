@@ -5,15 +5,15 @@ package main
 import (
 	"fmt"
 	"log"
+	"math/rand"
 	"os"
 	"os/signal"
 	"strconv"
 	"sync"
-	"sync/atomic"
 	"syscall"
 )
 
-func worker(stopCh chan struct{}, wg *sync.WaitGroup, i int, ch <-chan int64) {
+func worker(stopCh chan struct{}, wg *sync.WaitGroup, i int, ch <-chan int) {
 	defer wg.Done()
 	for {
 		select {
@@ -45,8 +45,7 @@ func main() {
 		log.Fatalln("incorrect workers")
 	}
 
-	ch := make(chan int64)
-	var v atomic.Int64
+	ch := make(chan int)
 
 	wg := &sync.WaitGroup{}
 
@@ -64,7 +63,7 @@ func main() {
 			select {
 			case <-stopCh: // вызов сигнала отмены -> закрытие канала stopCh, сигнализирующем об остановке -> закрытие канала для записи ch
 				return
-			case ch <- v.Add(1): //постоянная запись данных в канал
+			case ch <- rand.Intn(1000): //постоянная запись данных в канал
 			}
 
 		}
