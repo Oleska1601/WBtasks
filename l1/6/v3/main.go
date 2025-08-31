@@ -9,7 +9,7 @@ import (
 // timer
 // горутина закончит работу, когда истечет timer (в канал timer.C отправится текущее время)
 
-func worker(wg *sync.WaitGroup, timer *time.Timer) {
+func worker(timer *time.Timer, wg *sync.WaitGroup) {
 	defer wg.Done()
 	for {
 		select {
@@ -27,6 +27,6 @@ func main() {
 	wg := &sync.WaitGroup{}
 	timer := time.NewTimer(time.Second * 2)
 	wg.Add(1)
-	go worker(wg, timer)
+	go worker(timer, wg)
 	wg.Wait()
 }
