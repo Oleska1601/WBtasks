@@ -22,10 +22,7 @@ func (d *Data) Get(key int) (string, bool) {
 	d.mu.RLock()
 	defer d.mu.RUnlock()
 	v, ok := d.m[key]
-	if !ok {
-		return "", false
-	}
-	return v, true
+	return v, ok
 }
 
 func (d *Data) Put(key int, value string) {
