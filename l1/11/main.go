@@ -2,9 +2,7 @@ package main
 
 import "fmt"
 
-func main() {
-	l1 := []int{1, 2, 3}
-	l2 := []int{2, 3, 4}
+func findIntersection(l1, l2 []int) []int {
 	m := make(map[int]int) // [число] кол-во повторений
 	result := []int{}
 	for _, v := range l1 {
@@ -16,5 +14,12 @@ func main() {
 			m[num]--
 		}
 	}
+	return result
+}
+
+func main() {
+	l1 := []int{1, 2, 3}
+	l2 := []int{2, 3, 4}
+	result := findIntersection(l1, l2)
 	fmt.Println(result)
 }
