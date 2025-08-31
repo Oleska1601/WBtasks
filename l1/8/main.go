@@ -6,7 +6,7 @@ import (
 )
 
 // examples:
-// number=10, i = 3 заменить на 1 -> 14 (1010 -> 1100 = 14)
+// number=10, i = 3 заменить на 1 -> 14 (1010 -> 1110 = 14)
 // number=10, i = 2 заменить на 0 -> 8	(1010 -> 1000 = 8)
 
 func changeToZero(number int64, i int) int64 {
