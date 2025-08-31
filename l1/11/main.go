@@ -3,7 +3,7 @@ package main
 import "fmt"
 
 func findIntersection(l1, l2 []int) []int {
-	m := make(map[int]int) // [число] кол-во повторений
+	m := make(map[int]int, len(l1)) // [число] кол-во повторений
 	result := []int{}
 	for _, v := range l1 {
 		m[v]++
