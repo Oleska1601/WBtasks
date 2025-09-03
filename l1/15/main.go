@@ -3,17 +3,18 @@ package main
 import (
 	"fmt"
 	"math/rand"
+	"strings"
 )
 
 var justString string
 
 func createHugeString(size int) string {
-	str := ""
+	var str strings.Builder
 	for range size {
 		// строка состоит из цифр 0-9
-		str += fmt.Sprintf("%d", rand.Intn(10))
+		str.WriteString(fmt.Sprintf("%d", rand.Intn(10)))
 	}
-	return str
+	return str.String()
 }
 
 func someFunc() {
