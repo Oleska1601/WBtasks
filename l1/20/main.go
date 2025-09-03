@@ -26,6 +26,6 @@ func rotateSentence(s string) string {
 }
 
 func main() {
-	s := "sun dog snow "
+	s := "sun dog snow"
 	fmt.Println(rotateSentence(s))
 }
